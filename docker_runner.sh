@@ -19,7 +19,9 @@ then
     echo 🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨
     echo 
     echo
-    docker build -t fast_api .
+    # docker build -t fast_api .
+    docker-compose pull
+    docker-compose up --build -d
     eval $(minikube docker-env)
     echo
     echo 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -30,7 +32,8 @@ then
     echo 
     echo
     kubectl run fast-api-container-$date --image=fast_api --image-pull-policy=Never
-    sleep 5s
+    kubectl run postgres-container-$date --image=postgres:14.1-alpine
+    sleep 10s
     kubectl get pods
     sleep 5s
     echo
@@ -41,6 +44,7 @@ then
     echo 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
     echo 
     kubectl port-forward fast-api-container-$date 8000:8000
+    kubectl port-forward postgres-container-$date 5432:5432
 else
     docker build -t fast_api .
     docker run -d --name fast_api_container-$date -p 8000:8000 fast_api
